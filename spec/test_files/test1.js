@@ -1,0 +1,5 @@
+Pellentesque et facilisis elit. Suspendisse in mauris sed magna adipiscing tincidunt fringilla non nisi. Praesent adipiscing blandit fermentum. Mauris adipiscing, orci sit amet vehicula dapibus, est nunc rutrum tortor, vel scelerisque urna urna eget justo. Nulla facilisi. Morbi tincidunt sem dolor, sit amet congue diam fringilla nec. Morbi sit amet sollicitudin libero. Suspendisse tincidunt ullamcorper sem, id elementum lacus ullamcorper eu. Suspendisse potenti. Phasellus eget sodales tortor. Cras sodales, odio vitae vehicula lobortis, dui justo rhoncus erat, vitae rutrum tellus urna a nibh. Nullam convallis, augue sit amet consequat laoreet, justo nulla consequat erat, nec bibendum metus sem vitae risus. Mauris tristique mi neque, et porttitor eros condimentum non. Aliquam erat volutpat.
+
+//=test.js
+
+//=subdirectory/test2.js

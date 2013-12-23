@@ -7,8 +7,10 @@ module Guard
     attr_accessor :options, :runner
 
     DEFAULTS = {
-      :output => 'js',
-      :uglify => true,
+      :output       => 'js',
+      :input        => 'input',
+      :uglify       => true,
+      :run_all      => { message: 'Entangling all files' },
       :all_on_start => false
     }
 

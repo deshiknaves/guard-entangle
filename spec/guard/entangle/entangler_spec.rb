@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Guard::Entangle::Runner do
+describe Guard::Entangle::Entangler do
   let(:options) { { output: 'spec/test_output' } }
-  let(:runner) { Guard::Entangle::Runner.new(options) }
+  let(:entangler) { Guard::Entangle::Entangler.new(options) }
   before {
     allow(Guard::UI).to receive(:info)
   }
@@ -12,14 +12,14 @@ describe Guard::Entangle::Runner do
       let(:options) { { foo: :bar } }
 
       it 'sets the options to the passed in options' do
-        expect(runner.options).to eq(options)
+        expect(entangler.options).to eq(options)
       end
     end
   end
 
-  describe '#process_dir' do
-    it 'gets all the files to run on ' do
-      runner.send(:process_dir, 'spec/test_files', runner.options)
+  describe '#convert' do
+    it 'converts the given file by inserting the content' do
+      entangler.convert('spec/test_files/test1.js')
     end
   end
 end
