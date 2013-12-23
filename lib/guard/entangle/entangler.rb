@@ -12,7 +12,7 @@ module Guard
         file = File.open(path, 'rb')
         contents = file.read
         # Match all the //= in all the file
-        matches = search(contents)
+        matches = Set.new search(contents)
         if not matches.empty?
           matches.each do |entry|
             contents = replace(contents, entry, pn.dirname)
@@ -38,13 +38,9 @@ module Guard
         if check_file(file)
           insert = File.open(file, 'rb')
           insert_content = insert.read
-          content.sub! "//=#{name}", insert_content
+          content.gsub! "//=#{name}", insert_content
         end
         content
-      end
-
-      def load_file(file)
-
       end
     end
   end
