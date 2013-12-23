@@ -11,19 +11,27 @@ module Guard
         pn = Pathname.new(path)
         file = File.open(path, 'rb')
         contents = file.read
-        # Match all the //= in all the file
-        matches = Set.new search(contents)
-        if not matches.empty?
-          matches.each do |entry|
-            contents = replace(contents, entry, pn.dirname)
-          end
-          puts contents
-        end
+        contents = convert_file(contents, pn.dirname)
+
+        puts contents
       end
 
       private
 
+      def convert_file(contents, base)
+        matches = Set.new search(contents)
+        if not matches.empty?
+          matches.each do |entry|
+            contents = replace(contents, entry, base)
+          end
+        else
+          return contents
+        end
+        contents
+      end
+
       def check_file(file)
+        puts file
         File.exists?(file)
       end
 
@@ -34,10 +42,11 @@ module Guard
       def replace(content, file, path)
         name = file.sub '//=', ''
         file = "#{path}/#{name}"
-        puts file
         if check_file(file)
           insert = File.open(file, 'rb')
           insert_content = insert.read
+          pn = Pathname.new(insert)
+          insert = convert_file(insert_content, pn.dirname)
           content.gsub! "//=#{name}", insert_content
         end
         content
