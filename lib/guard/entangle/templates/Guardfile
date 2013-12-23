@@ -1,0 +1,5 @@
+# Watch any file in the src directory - change as required
+# Output directory set as output:
+guard :entangle, output: 'output' do
+    watch(%r{^src/.+\..+$})
+end
