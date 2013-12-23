@@ -22,10 +22,11 @@ module Guard
 
         files.each do |file|
           ::Guard::UI.info "File changed #{file}"
+          compile(file)
         end
       end
 
-      def complie(file)
+      def compile(file)
         puts "#{file} has been sent for conversion"
       end
 
