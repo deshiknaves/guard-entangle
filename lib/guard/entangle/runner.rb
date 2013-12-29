@@ -1,4 +1,5 @@
 require 'guard/entangle/entangler'
+require 'guard/entangle/formatter'
 
 module Guard
   class Entangle
@@ -10,11 +11,11 @@ module Guard
       def initialize(options={})
         @options = options
         @entangler = Entangler.new(options)
+        @formatter = Formatter.new
       end
 
       def run(files)
-        changed_files, errors = compile_files(files)
-        [changed_files, errors]
+        compile_files(files)
       end
 
       def run_all
@@ -67,6 +68,12 @@ module Guard
         # save the contents to a file
         if contents
           saved = output(contents, file)
+          message = "Successfully compiled and saved #{ file }"
+          @formatter.success(message)
+          @formatter.error(message)
+          @formatter.info(message)
+          @formatter.debug(message)
+          @formatter.notify(message, :title => 'Entangler results')
         else
           return contents
         end
@@ -76,6 +83,7 @@ module Guard
       def output(contents, file)
         # Save the file to the output directory
         puts "Outputing file to #{file}"
+        file
       end
     end
   end
