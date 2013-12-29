@@ -4,44 +4,68 @@ module Guard
     # The formatter handles providing output to the user.
     class Formatter
 
-      # @param opts [Hash]
-      # @option otps [Boolean] :success
-      #   Whether to print success messages
-      def initialize(opts={})
-        @hide_success = opts.fetch(:hide_success, false)
-      end
-
-      # Show a success message and notification if successes are being shown.
-      #
-      # @param msg [String]
-      # @param opts [Hash]
-      def success(msg, opts={})
-        unless @hide_success
-          benchmark = nil
-          if time = opts.delete(:time)
-            benchmark = "[\e[33m%2.2fs\e[0m] " % time
-          end
-          ::Guard::UI.info("\t\e[1;37mSass\e[0m %s%s" % [benchmark, msg], opts)
-          notify(opts[:notification], :image => :success)
+      # Print an info message to the console.
+        #
+        # @param [String] message the message to print
+        # @param [Hash] options the output options
+        # @option options [Boolean] :reset reset the UI
+        #
+        def info(message, options = {})
+          ::Guard::UI.info(message, options)
         end
-      end
 
-      # Show an error message and notification.
-      #
-      # @param msg [String]
-      # @param opts [Hash]
-      def error(msg, opts={})
-        ::Guard::UI.error("[Sass] #{msg}", opts)
-        notify(opts[:notification], :image => :failed)
-      end
+        # Print a debug message to the console.
+        #
+        # @param [String] message the message to print
+        # @param [Hash] options the output options
+        # @option options [Boolean] :reset reset the UI
+        #
+        def debug(message, options = {})
+          ::Guard::UI.debug(message, options)
+        end
 
-      # Show a system notification.
-      #
-      # @param msg [String]
-      # @param opts [Hash] See http://rubydoc.info/github/guard/guard/master/Guard/Notifier.notify
-      def notify(msg, opts={})
-        ::Guard::Notifier.notify(msg, ({:title => "Guard::Sass"}).merge(opts))
-      end
+        # Print a red error message to the console.
+        #
+        # @param [String] message the message to print
+        # @param [Hash] options the output options
+        # @option options [Boolean] :reset reset the UI
+        #
+        def error(message, options = {})
+          ::Guard::UI.error(color(message, ';31'), options)
+        end
+
+        # Print a green success message to the console.
+        #
+        # @param [String] message the message to print
+        # @param [Hash] options the output options
+        # @option options [Boolean] :reset reset the UI
+        #
+        def success(message, options = {})
+          stamped_message = "#{Time.now.strftime('%r')} #{message}"
+          ::Guard::UI.info(color(stamped_message, ';32'), options)
+        end
+
+        # Outputs a system notification.
+        #
+        # @param [String] message the message to print
+        # @param [Hash] options the output options
+        # @option options [Symbol, String] :image the image to use, either :failed, :pending or :success, or an image path
+        # @option options [String] :title the title of the system notification
+        #
+        def notify(message, options = {})
+          ::Guard::Notifier.notify(message, options)
+        end
+
+        private
+
+        # Print a info message to the console.
+        #
+        # @param [String] text the text to colorize
+        # @param [String] color_code the color code
+        #
+        def color(text, color_code)
+          ::Guard::UI.send(:color_enabled?) ? "\e[0#{ color_code }m#{ text }\e[0m" : text
+        end
 
     end
   end

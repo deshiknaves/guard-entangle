@@ -34,7 +34,8 @@ describe Guard::Entangle do
           :input        => 'input',
           :uglify       => false,
           :run_all      => { message: 'Entangling all files' },
-          :all_on_start => false
+          :all_on_start => false,
+          :hide_success => false
         }
       end
     end

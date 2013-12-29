@@ -8,7 +8,7 @@ describe Guard::Entangle::Entangler do
     base = Dir.pwd
     spec_dir = "#{base}/spec/test_files"
 
-    Dir.mkdir(spec_dir, 0700) unless File.directory?(spec_dir)
+    Dir.mkdir(spec_dir, 0700)
     Dir.chdir(spec_dir)
     test = File.new('test.js', 'w+')
     test.write("Test")
@@ -17,7 +17,7 @@ describe Guard::Entangle::Entangler do
     test1.write("Test 1\n//=test.js\n//=/subdirectory/test2.js")
     test1.close
     sub_dir = "#{spec_dir}/subdirectory"
-    Dir.mkdir(sub_dir, 0700) unless File.directory?(sub_dir)
+    Dir.mkdir(sub_dir, 0700)
     Dir.chdir(sub_dir)
     test2 = File.new('test2.js', 'w+')
     test2.write("Test 2\n//=../test.js")
@@ -28,7 +28,7 @@ describe Guard::Entangle::Entangler do
 
     # make the output directory
     output = "#{base}/spec/test_output"
-    Dir.mkdir(output, 0700) unless File.directory?(output)
+    Dir.mkdir(output, 0700)
   }
 
   after {
@@ -56,6 +56,44 @@ describe Guard::Entangle::Entangler do
 Test
 Test 2
 Test})
+    end
+
+    it 'returns false if the path given does not exist' do
+      content = entangler.convert('spec/test_files/file_does_not_exist.js')
+      expect(content).to eq(false)
+    end
+  end
+
+  describe "#convert_file" do
+
+    it "replaces content if file hook is found" do
+      file = File.open('spec/test_files/subdirectory/test2.js', 'r')
+      contents = file.read
+      file.close
+      content = entangler.send(:convert_file, contents, 'spec/test_files/subdirectory')
+      expect(content).to eq(%q{Test 2
+Test})
+    end
+
+    it "returns the same content if the matches are empty" do
+      contents = 'Test 2'
+      content = entangler.send(:convert_file, contents, 'spec/test_files/subdirectory')
+      expect(content).to eq(contents)
+    end
+  end
+
+  describe "#search" do
+
+    it "matches the occourances of file hooks" do
+      contents = "Test\n//=File1\n//=File2"
+      matches = entangler.send(:search, contents)
+      expect(matches.count).to eq(2)
+    end
+
+    it "returns empty if there are no occourances" do
+      contents = 'Test'
+      matches = entangler.send(:search, contents)
+      expect(matches.count).to eq(0)
     end
   end
 end

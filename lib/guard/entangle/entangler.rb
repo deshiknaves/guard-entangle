@@ -18,6 +18,9 @@ module Guard
       # @return [String]  The entangled content
       #
       def convert(path)
+        if not File.exists?(path)
+          return false
+        end
         pn = Pathname.new(path)
         file = File.open(path, 'rb')
         contents = file.read
@@ -45,16 +48,6 @@ module Guard
         contents
       end
 
-      # Check if the file exists
-      #
-      # @param [String]   file    The file to check
-      #
-      # @return [Bool]    If the file exists
-      #
-      def check_file(file)
-        File.exists?(file)
-      end
-
       # Search the contnet for any file hooks
       #
       # @param [String]   contents    The content to search
@@ -76,7 +69,7 @@ module Guard
       def replace(content, file, path)
         name = file.sub '//=', ''
         file = "#{path}/#{name}"
-        if check_file(file)
+        if File.exists?(file)
           insert = File.open(file, 'rb')
           insert_content = insert.read
           pn = Pathname.new(insert)

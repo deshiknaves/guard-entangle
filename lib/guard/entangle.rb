@@ -11,7 +11,8 @@ module Guard
       :input        => 'input',
       :uglify       => true,
       :run_all      => { message: 'Entangling all files' },
-      :all_on_start => false
+      :all_on_start => false,
+      :hide_success => false
     }
 
     # Initializes a Guard plugin.

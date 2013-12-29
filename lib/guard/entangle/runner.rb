@@ -9,7 +9,7 @@ module Guard
 
       def initialize(options={})
         @options = options
-        @inspector = Entangler.new(options)
+        @entangler = Entangler.new(options)
       end
 
       def run(files)
@@ -56,9 +56,6 @@ module Guard
       end
 
       def compile_files(files)
-        errors = []
-        changed_files = []
-
         files.each do |file|
           ::Guard::UI.info "File changed #{file}"
           compile(file)
@@ -66,9 +63,20 @@ module Guard
       end
 
       def compile(file)
-        puts "#{file} has been sent for conversion"
+        contents = @entangler.convert(file)
+        # save the contents to a file
+        if contents
+          saved = output(contents, file)
+        else
+          return contents
+        end
+        saved
       end
 
+      def output(contents, file)
+        # Save the file to the output directory
+        puts "Outputing file to #{file}"
+      end
     end
   end
 end
