@@ -12,7 +12,8 @@ module Guard
       :uglify       => true,
       :run_all      => { message: 'Entangling all files' },
       :all_on_start => false,
-      :hide_success => false
+      :hide_success => false,
+      :uglifier     => {}
     }
 
     # Initializes a Guard plugin.
@@ -77,7 +78,6 @@ module Guard
     #
     def run_on_modifications(paths)
       return false if paths.empty?
-      ::Guard::UI.info 'Files changed'
       _throw_if_failed { runner.run(paths) }
     end
 

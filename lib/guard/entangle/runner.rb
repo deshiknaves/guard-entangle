@@ -1,5 +1,6 @@
 require 'guard/entangle/entangler'
 require 'guard/entangle/formatter'
+require 'guard/entangle/writer'
 
 module Guard
   class Entangle
@@ -12,6 +13,7 @@ module Guard
         @options = options
         @entangler = Entangler.new(options)
         @formatter = Formatter.new
+        @writer = Writer.new(options)
       end
 
       def run(files)
@@ -34,7 +36,7 @@ module Guard
             process_dir(path, options)
           end
         elsif paths.kind_of?(String)
-          process_dir(path, options)
+          process_dir(paths, options)
         else
           ::Guard::UI.info "Paths in configuration are incorrect"
         end
@@ -43,14 +45,17 @@ module Guard
       def process_dir(paths, options)
         return false unless File.directory?(paths)
         skip = %w[. ..];
+
         cwd = Dir.pwd
-        entries = Dir.entries("#{cwd}/#{paths}")
+        path = "#{cwd}/#{paths}"
+
+        entries = Dir.entries(path)
         entries.each do |file|
           if not skip.include?(file)
-            if File.directory?(file)
-              process_dir(true, paths, options)
+            if File.directory?("#{path}/#{file}")
+              process_dir("#{paths}/#{file}", options)
             else
-              compile(file)
+              compile("#{path}/#{file}")
             end
           end
         end
@@ -58,7 +63,7 @@ module Guard
 
       def compile_files(files)
         files.each do |file|
-          ::Guard::UI.info "File changed #{file}"
+          # ::Guard::UI.info "File changed #{file}"
           compile(file)
         end
       end
@@ -67,23 +72,16 @@ module Guard
         contents = @entangler.convert(file)
         # save the contents to a file
         if contents
-          saved = output(contents, file)
+          saved = @writer.output(contents, file)
           message = "Successfully compiled and saved #{ file }"
           @formatter.success(message)
-          @formatter.error(message)
-          @formatter.info(message)
-          @formatter.debug(message)
-          @formatter.notify(message, :title => 'Entangler results')
+          @formatter.notify(message, { title: 'Entangler results', image: :success })
         else
-          return contents
+          message = "#{ file } does not exist or is not accessable"
+          @formatter.error(message)
+          @formatter.notify(message, { title: 'Entangler results', image: :failed })
         end
         saved
-      end
-
-      def output(contents, file)
-        # Save the file to the output directory
-        puts "Outputing file to #{file}"
-        file
       end
     end
   end
