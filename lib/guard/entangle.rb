@@ -13,7 +13,8 @@ module Guard
       :run_all      => { message: 'Entangling all files' },
       :all_on_start => false,
       :hide_success => false,
-      :uglifier     => {}
+      :uglifier     => {},
+      :copy         => true #save a copy of the
     }
 
     # Initializes a Guard plugin.

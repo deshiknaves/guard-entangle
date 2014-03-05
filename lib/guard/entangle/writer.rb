@@ -23,24 +23,42 @@ module Guard
         filename.gsub! "#{source}/", ''
         path = "#{cwd}/#{@options[:output]}/#{filename}"
         FileUtils.mkdir_p(File.dirname(path))
-        content = format(content, file, path)
-        if content
-          output = File.new(path, 'w+')
-          output.write(content)
-          output.close
+
+        if @options[:uglify]
+          uglify(content, file, path)
+        else
+          save(content, path)
         end
       end
 
-      def format(content, file, path)
+      # Uglify the js file
+      def uglify(content, file, path)
         if File.extname(path) == '.js'
+          min = path.gsub(/\.[^.]+$/, '.min.js')
           begin
             content = Uglifier.new(@options[:uglifier]).compile(content)
+            save(content, min)
           rescue
             @formatter.error("Parse error for #{file}")
             return nil
           end
+
+          if @options[:copy]
+            save(content, path)
+          end
         end
-        content
+      end
+
+      # Save the file
+      def save(content, path)
+        if content
+          output = File.new(path, 'w+')
+          output.write(content)
+          output.close
+        else
+          message = "Content for #{ path } was empty"
+          @formatter.error(message)
+        end
       end
     end
   end
