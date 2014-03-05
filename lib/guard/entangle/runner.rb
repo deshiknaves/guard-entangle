@@ -63,7 +63,6 @@ module Guard
 
       def compile_files(files)
         files.each do |file|
-          # ::Guard::UI.info "File changed #{file}"
           compile(file)
         end
       end
@@ -75,7 +74,7 @@ module Guard
           saved = @writer.output(contents, file)
           message = "Successfully compiled and saved #{ file }"
           @formatter.success(message)
-          @formatter.notify(message, { title: 'Entangler results', image: :success })
+          # @formatter.notify(message, { title: 'Entangler results', image: :success })
         else
           message = "#{ file } does not exist or is not accessable"
           @formatter.error(message)
