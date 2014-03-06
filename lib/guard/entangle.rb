@@ -7,14 +7,14 @@ module Guard
     attr_accessor :options, :runner
 
     DEFAULTS = {
-      :output       => 'js',
-      :input        => 'input',
-      :uglify       => true,
-      :run_all      => { message: 'Entangling all files' },
-      :all_on_start => false,
-      :hide_success => false,
-      :uglifier     => {},
-      :copy         => true #save a copy of the
+      :output           => 'js',
+      :input            => 'input',
+      :uglify           => true,
+      :run_all          => { message: 'Entangling all files' },
+      :all_on_start     => false,
+      :hide_success     => false,
+      :uglifier_options => {},
+      :copy             => true #save a copy of the original file
     }
 
     # Initializes a Guard plugin.

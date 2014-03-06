@@ -22,9 +22,9 @@ Inserts file content inline into another document. Optionally uglifies the outpu
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'guard',    '>= 2.1.1'
-  spec.add_dependency 'uglifier', '>= 2.3.3'
+  spec.add_dependency 'guard',    '~> 2.1'
+  spec.add_dependency 'uglifier', '~> 2.3'
 
   spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rake", "~> 0"
 end
