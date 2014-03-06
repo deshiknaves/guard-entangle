@@ -84,7 +84,7 @@ module Guard
         if contents
           saved = @writer.output(contents, file)
           if saved
-            message = "Successfully compiled and saved #{ file }"
+            message = "Successfully compiled and saved #{ saved }"
             @formatter.success(message)
           end
         else

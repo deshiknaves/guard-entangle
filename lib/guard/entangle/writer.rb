@@ -7,9 +7,10 @@ module Guard
     # The writter class to create an write files
     class Writer
 
-      attr_accessor :options
+      attr_accessor :options, :cwd
 
       def initialize(options={})
+        @cwd = Dir.pwd
         @options = options
         @formatter = Formatter.new
       end
@@ -27,7 +28,8 @@ module Guard
               save(content, path)
             end
           else
-            message = "The path #{path} is not writable."
+            path.gsub! "#{cwd}/", ''
+            message = "The path #{ rel } is not writable."
             @formatter.error(message)
             return
           end
@@ -58,24 +60,24 @@ module Guard
 
       # Save the file
       def save(content, path)
+        file = path.gsub "#{cwd}/", ''
         if content
           if File.writable?(File.dirname(path))
             output = File.new(path, 'w+')
             output.write(content)
             output.close
-            return true
+            return file
           else
-            message = "The path #{path} is not writable."
+            message = "The path #{ file } is not writable."
             @formatter.error(message)
           end
         else
-          message = "Content for #{ path } was empty"
+          message = "Content for #{ file } was empty"
           @formatter.error(message)
         end
       end
 
       def get_path(file)
-        cwd = Dir.pwd
         path = "#{cwd}/#{options[:output]}"
         if File.extname(options[:output]).empty?
           filename = file.gsub "#{cwd}/", ''
