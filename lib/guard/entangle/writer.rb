@@ -17,23 +17,20 @@ module Guard
       # Outputs the file in it's needed location
       def output(content, file)
         # Output the file
-        cwd = Dir.pwd
-        filename = file.gsub "#{cwd}/", ''
-        source = filename.split('/').first
-        filename.gsub! "#{source}/", ''
-        path = "#{cwd}/#{options[:output]}/#{filename}"
-
-        if File.writable?(path)
-          FileUtils.mkdir_p(File.dirname(path))
-          # Uglify the files if the flag is set
-          if options[:uglify]
-            uglify(content, file, path)
+        path = get_path(file)
+        if create_path?(path)
+          if File.writable?(File.dirname(path))
+            # Uglify the files if the flag is set
+            if options[:uglify]
+              uglify(content, file, path)
+            else
+              save(content, path)
+            end
           else
-            save(content, path)
+            message = "The path #{path} is not writable."
+            @formatter.error(message)
+            return
           end
-        else
-          message = "The path #{path} is not writable."
-          @formatter.error(message)
         end
       end
 
@@ -54,16 +51,19 @@ module Guard
           if options[:copy]
             save(content, path)
           end
+        else
+          save(content, path)
         end
       end
 
       # Save the file
       def save(content, path)
         if content
-          if File.writable?(path)
+          if File.writable?(File.dirname(path))
             output = File.new(path, 'w+')
             output.write(content)
             output.close
+            return true
           else
             message = "The path #{path} is not writable."
             @formatter.error(message)
@@ -72,6 +72,29 @@ module Guard
           message = "Content for #{ path } was empty"
           @formatter.error(message)
         end
+      end
+
+      def get_path(file)
+        cwd = Dir.pwd
+        path = "#{cwd}/#{options[:output]}"
+        if File.extname(options[:output]).empty?
+          filename = file.gsub "#{cwd}/", ''
+          source = filename.split('/').first
+          filename.gsub! "#{source}/", ''
+          path = "#{path}/#{filename}"
+        end
+        path
+      end
+
+      def create_path?(path)
+        begin
+          FileUtils.mkdir_p(File.dirname(path))
+        rescue Exception => e
+          message = e.message.split(/[\n\r]/).first
+          @formatter.error("Uglifier - #{message}")
+          return false
+        end
+        true
       end
     end
   end

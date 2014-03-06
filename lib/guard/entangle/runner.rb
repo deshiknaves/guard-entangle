@@ -83,8 +83,10 @@ module Guard
         # save the contents to a file
         if contents
           saved = @writer.output(contents, file)
-          message = "Successfully compiled and saved #{ file }"
-          @formatter.success(message)
+          if saved
+            message = "Successfully compiled and saved #{ file }"
+            @formatter.success(message)
+          end
         else
           message = "#{ file } does not exist or is not accessable"
           @formatter.error(message)
