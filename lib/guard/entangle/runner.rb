@@ -17,13 +17,17 @@ module Guard
       end
 
       def run(files)
-        # We need to check to see if the input is a
-        # directory, else only check that file
-        ::Guard::UI.info @options[:input]
-        if File.directory?(@options[:input])
-          compile_files(files)
+        # Check if it's a partial
+        if partial?(files.first)
+          run_all
         else
-          compile(@options[:input])
+          # We need to check to see if the input is a
+          # directory, else only check that file
+          if File.directory?(@options[:input])
+            compile_files(files)
+          else
+            compile(@options[:input])
+          end
         end
       end
 
@@ -62,7 +66,7 @@ module Guard
 
         entries = Dir.entries(path)
         entries.each do |file|
-          if not skip.include?(file)
+          if not skip.include?(file) and not partial?(file)
             if File.directory?("#{path}/#{file}")
               process_dir("#{paths}/#{file}", options)
             else
@@ -94,7 +98,7 @@ module Guard
         saved
       end
 
-      def partial?
+      def partial?(path)
         File.basename(path).start_with? '_'
       end
     end
