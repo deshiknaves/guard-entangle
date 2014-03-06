@@ -36,6 +36,8 @@ module Guard
         end
       end
 
+      private
+
       # Uglify the js file
       def uglify(content, file, path)
         if File.extname(path) == '.js'
