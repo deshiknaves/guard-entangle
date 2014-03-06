@@ -22,12 +22,18 @@ module Guard
         source = filename.split('/').first
         filename.gsub! "#{source}/", ''
         path = "#{cwd}/#{options[:output]}/#{filename}"
-        FileUtils.mkdir_p(File.dirname(path))
 
-        if options[:uglify]
-          uglify(content, file, path)
+        if File.writable?(path)
+          FileUtils.mkdir_p(File.dirname(path))
+          # Uglify the files if the flag is set
+          if options[:uglify]
+            uglify(content, file, path)
+          else
+            save(content, path)
+          end
         else
-          save(content, path)
+          message = "The path #{path} is not writable."
+          @formatter.error(message)
         end
       end
 
@@ -44,6 +50,7 @@ module Guard
             return nil
           end
 
+          # If it's specified to keep a copy of the original
           if options[:copy]
             save(content, path)
           end
