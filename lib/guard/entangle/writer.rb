@@ -21,10 +21,10 @@ module Guard
         filename = file.gsub "#{cwd}/", ''
         source = filename.split('/').first
         filename.gsub! "#{source}/", ''
-        path = "#{cwd}/#{@options[:output]}/#{filename}"
+        path = "#{cwd}/#{options[:output]}/#{filename}"
         FileUtils.mkdir_p(File.dirname(path))
 
-        if @options[:uglify]
+        if options[:uglify]
           uglify(content, file, path)
         else
           save(content, path)
@@ -36,7 +36,7 @@ module Guard
         if File.extname(path) == '.js'
           min = path.gsub(/\.[^.]+$/, '.min.js')
           begin
-            uglify = Uglifier.new(@options[:uglifier_options]).compile(content)
+            uglify = Uglifier.new(options[:uglifier_options]).compile(content)
             save(uglify, min)
           rescue Exception => e
             message = e.message.split(/[\n\r]/).first
@@ -44,7 +44,7 @@ module Guard
             return nil
           end
 
-          if @options[:copy]
+          if options[:copy]
             save(content, path)
           end
         end
@@ -53,9 +53,14 @@ module Guard
       # Save the file
       def save(content, path)
         if content
-          output = File.new(path, 'w+')
-          output.write(content)
-          output.close
+          if File.writable?(path)
+            output = File.new(path, 'w+')
+            output.write(content)
+            output.close
+          else
+            message = "The path #{path} is not writable."
+            @formatter.error(message)
+          end
         else
           message = "Content for #{ path } was empty"
           @formatter.error(message)

@@ -18,7 +18,7 @@ module Guard
       # @return [String]  The entangled content
       #
       def convert(path)
-        if not File.exists?(path)
+        if not File.exists?(path) or not File.readable?(path)
           return false
         end
         pn = Pathname.new(path)
@@ -69,14 +69,14 @@ module Guard
       def replace(content, file, path)
         name = file.sub '//=', ''
         file = "#{path}/#{name}"
-        if File.exists?(file)
+        if File.exists?(file) && File.readable?(file)
           insert = File.open(file, 'rb')
           insert_content = insert.read
           pn = Pathname.new(insert)
           insert = convert_file(insert_content, pn.dirname)
           content.gsub! "//=#{name}", insert_content
         else
-          content.gsub! "// #{name}: Does not exist!"
+          content.gsub! "// #{name}: Does not exist or isn't readable!"
         end
         content
       end
