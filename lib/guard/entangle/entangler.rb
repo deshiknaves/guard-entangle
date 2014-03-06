@@ -5,7 +5,7 @@ module Guard
 
       # Initialize entangler
       #
-      # @param [Hash]   options   The options passed in
+      # @param [Hash] options The options passed in
       #
       def initialize(options={})
         @options = options
@@ -13,9 +13,8 @@ module Guard
 
       # Convert the file
       #
-      # @param [String]   path    The path of file
-      #
-      # @return [String]  The entangled content
+      # @param  [String] path    The path of file
+      # @return [String] The entangled content
       #
       def convert(path)
         if not File.exists?(path) or not File.readable?(path)
@@ -31,9 +30,8 @@ module Guard
 
       # Convert the file
       #
-      # @param [String]   contents    The content to replace in
-      # @param [String]   base        The base path
-      #
+      # @param  [String]  contents    The content to replace in
+      # @param  [String]  base        The base path
       # @return [String]  The replaced content
       #
       def convert_file(contents, base)
@@ -50,8 +48,7 @@ module Guard
 
       # Search the contnet for any file hooks
       #
-      # @param [String]   contents    The content to search
-      #
+      # @param  [String]  contents    The content to search
       # @return [Array]   The array of found hooks
       #
       def search(contents)
@@ -60,10 +57,9 @@ module Guard
 
       # Replace the file hook with the contents of the file
       #
-      # @param [String]   content   The content of the file
-      # @param [String]   file      The file hook
-      # @param [String]   path      The base path of the file
-      #
+      # @param  [String]  content   The content of the file
+      # @param  [String]  file      The file hook
+      # @param  [String]  path      The base path of the file
       # @return [String]  The replaced content
       #
       def replace(content, file, path)
