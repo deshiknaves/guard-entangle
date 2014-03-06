@@ -9,6 +9,10 @@ module Guard
 
       attr_accessor :options
 
+      # Initialize the object
+      #
+      # @param [hash] options The options passed in
+      #
       def initialize(options={})
         @options = options
         @entangler = Entangler.new(options)
@@ -16,6 +20,11 @@ module Guard
         @writer = Writer.new(options)
       end
 
+      # Run a changed file
+      #
+      # @param  [array] files Contains the changed file
+      # @return [void]
+      #
       def run(files)
         # Check if it's a partial
         if partial?(files.first)
@@ -31,6 +40,11 @@ module Guard
         end
       end
 
+
+      # Run all the file(s) that are set in input
+      #
+      # @return [void]
+      #
       def run_all
         paths = options[:input]
         if File.directory?(paths)
@@ -45,6 +59,13 @@ module Guard
 
       private
 
+
+      # Run through all the paths
+      #
+      # @param  [array] paths   The paths array
+      # @param  [hash]  options The options
+      # @return [void]
+      #
       def run_paths(paths, options)
         if paths.kind_of?(Array)
           paths.each do |path|
@@ -57,6 +78,13 @@ module Guard
         end
       end
 
+
+      # Process the entire directory
+      #
+      # @param  [array] paths   The paths array
+      # @param  [hash]  options The options
+      # @return [void]
+      #
       def process_dir(paths, options)
         return false unless File.directory?(paths)
         skip = %w[. ..];
@@ -66,6 +94,7 @@ module Guard
 
         entries = Dir.entries(path)
         entries.each do |file|
+          # Skip the dot files and the partials
           if not skip.include?(file) and not partial?(file)
             if File.directory?("#{path}/#{file}")
               process_dir("#{paths}/#{file}", options)
@@ -76,12 +105,24 @@ module Guard
         end
       end
 
+
+      # Compile each of the files
+      #
+      # @param [array] files The array of files
+      # @return [void]
+      #
       def compile_files(files)
         files.each do |file|
           compile(file)
         end
       end
 
+
+      # Compile a file
+      #
+      # @param [string] file The file to compile
+      # @return [string] The saved file
+      #
       def compile(file)
         contents = @entangler.convert(file)
         # save the contents to a file
@@ -98,6 +139,11 @@ module Guard
         saved
       end
 
+      # Check if the file is a partial or not
+      #
+      # @param [string] path The path to check
+      # @return [boolean] If it is a partial
+      #
       def partial?(path)
         File.basename(path).start_with? '_'
       end

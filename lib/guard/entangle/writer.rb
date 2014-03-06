@@ -9,13 +9,24 @@ module Guard
 
       attr_accessor :options, :cwd
 
+
+      # Initialize entangler
+      #
+      # @param [Hash]   options   The options passed in
+      #
       def initialize(options={})
         @cwd = Dir.pwd
         @options = options
         @formatter = Formatter.new
       end
 
+
       # Outputs the file in it's needed location
+      #
+      # @param  [string] content The content to be written
+      # @param  [string] file    The file path
+      # @return [mixed] path on success else false
+      #
       def output(content, file)
         # Output the file
         path = get_path(file)
@@ -39,6 +50,12 @@ module Guard
       private
 
       # Uglify the js file
+      #
+      # @param  [string] content The content
+      # @param  [string] file    The source file path
+      # @param  [string] path    The destination path
+      # @return [mixed] path on success, else false
+      #
       def uglify(content, file, path)
         if File.extname(path) == '.js'
           min = path.gsub(/\.[^.]+$/, '.min.js')
@@ -46,6 +63,7 @@ module Guard
             uglify = Uglifier.new(options[:uglifier_options]).compile(content)
             save(uglify, min)
           rescue Exception => e
+            # Get a readable message
             message = e.message.split(/[\n\r]/).first
             @formatter.error("Uglifier - #{message}")
             return nil
@@ -60,7 +78,13 @@ module Guard
         end
       end
 
+
       # Save the file
+      #
+      # @param  [string] content The content to write
+      # @param  [string] path    The destination file
+      # @return [mixed] path on success, else false
+      #
       def save(content, path)
         file = path.gsub "#{cwd}/", ''
         if content
@@ -79,6 +103,12 @@ module Guard
         end
       end
 
+
+      # Get the appropriate path depending on the settings
+      #
+      # @param  [string] file The file path
+      # @return [string] The correct file path
+      #
       def get_path(file)
         path = "#{cwd}/#{options[:output]}"
         if File.extname(options[:output]).empty?
@@ -90,6 +120,11 @@ module Guard
         path
       end
 
+      # Create the required directories
+      #
+      # @param  [string] path The file path
+      # @return [boolean] If the folder was created
+      #
       def create_path?(path)
         begin
           FileUtils.mkdir_p(File.dirname(path))
