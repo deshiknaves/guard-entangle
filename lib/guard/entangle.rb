@@ -82,10 +82,6 @@ module Guard
       _throw_if_failed { runner.run(paths) }
     end
 
-    def partial?
-      File.basename(path).start_with? '_'
-    end
-
     private
 
     def _throw_if_failed

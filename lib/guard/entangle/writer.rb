@@ -36,8 +36,8 @@ module Guard
         if File.extname(path) == '.js'
           min = path.gsub(/\.[^.]+$/, '.min.js')
           begin
-            content = Uglifier.new(@options[:uglifier_options]).compile(content)
-            save(content, min)
+            uglify = Uglifier.new(@options[:uglifier_options]).compile(content)
+            save(uglify, min)
           rescue Exception => e
             message = e.message.split(/[\n\r]/).first
             @formatter.error("Uglifier - #{message}")

@@ -17,15 +17,26 @@ module Guard
       end
 
       def run(files)
-        compile_files(files)
+        # We need to check to see if the input is a
+        # directory, else only check that file
+        ::Guard::UI.info @options[:input]
+        if File.directory?(@options[:input])
+          compile_files(files)
+        else
+          compile(@options[:input])
+        end
       end
 
       def run_all
         paths = options[:input]
-        options = @options.merge(@options[:run_all]).freeze
-        return if paths.empty?
-        ::Guard::UI.info(options[:message], reset: true)
-        run_paths(paths, options)
+        if File.directory?(paths)
+          options = @options.merge(@options[:run_all]).freeze
+          return if paths.empty?
+          ::Guard::UI.info(options[:message], reset: true)
+          run_paths(paths, options)
+        else
+          compile(paths)
+        end
       end
 
       private
@@ -74,13 +85,15 @@ module Guard
           saved = @writer.output(contents, file)
           message = "Successfully compiled and saved #{ file }"
           @formatter.success(message)
-          # @formatter.notify(message, { title: 'Entangler results', image: :success })
         else
           message = "#{ file } does not exist or is not accessable"
           @formatter.error(message)
-          @formatter.notify(message, { title: 'Entangler results', image: :failed })
         end
         saved
+      end
+
+      def partial?
+        File.basename(path).start_with? '_'
       end
     end
   end
