@@ -64,8 +64,8 @@ module Guard
       #
       def replace(content, file, path)
         name = file.sub '//=', ''
-        name.strip!
-        file = "#{path}/#{name}"
+        stripped = name.strip
+        file = "#{path}/#{stripped}"
         if File.exists?(file) && File.readable?(file)
           insert = File.open(file, 'rb')
           insert_content = insert.read
