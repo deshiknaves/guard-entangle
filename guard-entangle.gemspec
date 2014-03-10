@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Deshi Rahim"]
   spec.email         = ["deshi@deshiknaves.com"]
   spec.description   = %q{
-This gem leverages Guard's watch ability to insert files inline within another file. When the parser incounters a //=path/to/file, it then gets the content of that file and then inserts the content replacing the comment. Optionally that file can then be passed through Uglifier. Files with no insertions will just be copied over.
+This gem leverages Guard's watch ability to insert files inline within another file. When the parser incounters a //= path/to/file, it then gets the content of that file and then inserts the content replacing the comment. Optionally that file can then be passed through Uglifier. Files with no insertions will just be copied over.
 }
   spec.summary       = %q{
 Inserts file content inline into another document. Optionally uglifies the output.
