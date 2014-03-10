@@ -30,12 +30,14 @@ describe Guard::Entangle do
 
       it 'merges the passed options with the defaults' do
         subject.options.should == {
-          :output       => 'output',
-          :input        => 'input',
-          :uglify       => false,
-          :run_all      => { message: 'Entangling all files' },
-          :all_on_start => false,
-          :hide_success => false
+          :output           => 'output',
+          :input            => 'input',
+          :uglify           => false,
+          :run_all          => { message: 'Entangling all files' },
+          :all_on_start     => false,
+          :hide_success     => false,
+          :uglifier_options => {},
+          :copy             => true
         }
       end
     end

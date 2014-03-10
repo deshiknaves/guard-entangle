@@ -4,7 +4,6 @@ require 'guard/entangle/writer'
 
 module Guard
   class Entangle
-
     class Runner
 
       attr_accessor :options

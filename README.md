@@ -69,7 +69,31 @@ end
 This will watch all files that match the regex _%r{^src/.+\..+$}_ or its subdirectory and then when a file has been changed, it will compile _src/File1.js_ and write the compiled file into _output/File1.js_. This is because the __:output__ folder is defined as output.
 
 ### Specifying the output filename
-When compiling one file you may choose to specify the name of the output file.
+When compiling one file you may choose to specify the name of the output file. This has 2 different behaviors depending on the input. If the input is a directory, then it will entangle all the files into the output file. If the input is a file, then it will take that file and entangle it into the output file.
+
+```
+guard :entangle, output: 'output/output.js', all_on_start: false, input: 'src', uglifier_options: {} do
+    watch(%r{^src/.+\..+$})
+end
+```
+This will watch all files that match the regex _%r{^src/.+\..+$}_ or its subdirectory and then when a file has been changed, it will compile all the files in _src_ and write the compiled file into _output/output.js_. This is because the __:output__ is defined as that file.
+
+```
+guard :entangle, output: 'output/output.js', all_on_start: false, input: 'src/File.js', uglifier_options: {} do
+    watch(%r{^src/.+\..+$})
+end
+```
+This will watch all files that match the regex _%r{^src/.+\..+$}_ or its subdirectory and then when a file has been changed, it will compile all the file _src/File.js_ and write the compiled file into _output/output.js_. This is because the __:output__ is defined as that file.
+
+## Options
+The options that can be passed are
+
+* :output           = The output file/folder
+* :input            = The input file/folder
+* :uglify           = If js files should be uglified
+* :all_on_start     = If all files should be engtangled when guard has started
+* :uglifier_options = {} Pass a Hash of any [uglifier options](https://github.com/lautis/uglifier)
+* :copy             = Saves a copy of the non uglified file along with the min file
 
 ## Contributing
 
