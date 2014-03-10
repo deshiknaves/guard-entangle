@@ -72,7 +72,6 @@ module Guard
       # Run through all the paths
       #
       # @param  [array] paths   The paths array
-      # @param  [hash]  options The options
       # @return [void]
       #
       def run_paths(paths)
@@ -90,8 +89,8 @@ module Guard
 
       # Process the entire directory
       #
-      # @param  [array] paths   The paths array
-      # @param  [hash]  options The options
+      # @param  [array]  paths        The paths array
+      # @param  [boolen] only_compile If the file shouldn't be saved
       # @return [void]
       #
       def process_dir(paths, only_compile = false)
@@ -121,7 +120,7 @@ module Guard
 
       # Compile all files and save then in the same file
       #
-      # @param [string] path The input path
+      # @param  [string] path The input path
       # @return [void]
       #
       def compile_all(path)
@@ -136,7 +135,7 @@ module Guard
 
       # Compile each of the files
       #
-      # @param [array] files The array of files
+      # @param  [array] files The array of files
       # @return [void]
       #
       def compile_files(files)
@@ -148,8 +147,9 @@ module Guard
 
       # Compile a file
       #
-      # @param [string] file The file to compile
-      # @return [string] The saved file
+      # @param  [string]  file         The file to compile
+      # @param  [boolean] only_compile If the file shouldn't be saved
+      # @return [string]               The saved file or contents
       #
       def compile(file, only_compile = false)
         contents = @entangler.convert(file)
@@ -173,13 +173,17 @@ module Guard
 
       # Check if the file is a partial or not
       #
-      # @param [string] path The path to check
+      # @param  [string] path The path to check
       # @return [boolean] If it is a partial
       #
       def partial?(path)
         File.basename(path).start_with? '_'
       end
 
+      # If the output is a directory
+      #
+      # @return [boolean]
+      #
       def output_dir?
         File.extname(options[:output]).empty?
       end
