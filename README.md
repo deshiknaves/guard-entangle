@@ -8,7 +8,7 @@ Often you might have separate JavaScript files that need to be included into one
 
 ## Installation
 
-This will be the installation process once the gem is published. I'm not going to do that till I've finished with a couple of more spec files. You can use it at the moment by `gem build` and then `gem install` on the built file.
+NOTE: This is an innitial release - just to make sure the name isn't stolen now that it's on Github (I'm told this happens). There are a couple of Rpecs missing. It will be a full release once those files are added to this gem.
 
 Add this line to your application's Gemfile:
 
