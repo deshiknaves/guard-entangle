@@ -14,7 +14,7 @@ This gem leverages Guard's watch ability to insert files inline within another f
   spec.summary       = %q{
 Inserts file content inline into another document. Optionally uglifies the output.
 }
-  spec.homepage      = "http://rubygems.org/gems/guard-insert"
+  spec.homepage      = "http://rubygems.org/gems/guard-entangle"
   spec.license       = "MIT"
 
   spec.files         = Dir.glob('{lib}/**/*') + %w[LICENSE README.md]
