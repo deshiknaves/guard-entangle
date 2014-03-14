@@ -93,6 +93,7 @@ The options that can be passed are
 * :uglify           = If js files should be uglified
 * :all_on_start     = If all files should be engtangled when guard has started
 * :uglifier_options = {} Pass a Hash of any [uglifier options](https://github.com/lautis/uglifier)
+* :force_utf8       = Default is false. If content should be forced to UTF-8 before uglifying
 * :copy             = Saves a copy of the non uglified file along with the min file
 
 ## Contributing

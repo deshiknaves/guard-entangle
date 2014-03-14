@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'guard'
 require 'guard/plugin'
 
@@ -14,6 +16,7 @@ module Guard
       :all_on_start     => false,
       :hide_success     => false,
       :uglifier_options => {},
+      :force_utf8       => false,
       :copy             => true #save a copy of the original file
     }
 

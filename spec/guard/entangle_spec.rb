@@ -37,6 +37,7 @@ describe Guard::Entangle do
           :all_on_start     => false,
           :hide_success     => false,
           :uglifier_options => {},
+          :force_utf8       => false,
           :copy             => true
         }
       end

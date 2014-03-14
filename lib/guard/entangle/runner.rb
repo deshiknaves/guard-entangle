@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'guard/entangle/entangler'
 require 'guard/entangle/formatter'
 require 'guard/entangle/writer'

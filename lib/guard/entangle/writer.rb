@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'uglifier'
 require 'guard/entangle/formatter'
 
@@ -60,6 +62,10 @@ module Guard
         if File.extname(path) == '.js'
           min = path.gsub(/\.[^.]+$/, '.min.js')
           begin
+            if (options[:force_utf8])
+              content.encoding
+              content.force_encoding 'utf-8'
+            end
             uglify = Uglifier.new(options[:uglifier_options]).compile(content)
             save(uglify, min)
           rescue Exception => e
