@@ -27,6 +27,35 @@ describe Guard::Entangle::Writer do
     end
   end
 
+  describe '#save' do
+    it 'save a file if there is content' do
+
+      ::Guard::UI.stub(:info)
+      file = writer.send(:save, 'This is some content', "#{cwd}/spec/test_output")
+
+      expect(file).to eq('spec/test_output')
+    end
+
+    it 'throws an error when no content is passed' do
+
+      ::Guard::UI.stub(:error)
+
+      saved = writer.send(:save, nil, "#{cwd}/spec/test_output")
+
+      expect(saved).to eq(nil)
+    end
+
+    it 'throws an error when the directory is not writable' do
+
+      File.stub(:writable?).and_return(false)
+      ::Guard::UI.stub(:error)
+
+      saved = writer.send(:save, nil, "#{cwd}/spec/test_output")
+
+      expect(saved).to eq(nil)
+    end
+  end
+
   describe '#get_path' do
     it 'gets the correct file path for a folder' do
       path = writer.send(:get_path, 'file')

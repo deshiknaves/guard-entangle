@@ -135,8 +135,8 @@ module Guard
         begin
           FileUtils.mkdir_p(File.dirname(path))
         rescue Exception => e
-          message = e.message.split(/[\n\r]/).first
-          @formatter.error("Uglifier - #{message}")
+          message = "Could not create #{path}. Please check that the directory is writable."
+          @formatter.error(message)
           return false
         end
         true
