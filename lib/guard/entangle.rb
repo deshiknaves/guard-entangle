@@ -17,6 +17,7 @@ module Guard
       :hide_success     => false,
       :uglifier_options => {},
       :force_utf8       => false,
+      :error_lines      => 6,
       :copy             => true #save a copy of the original file
     }
 

@@ -57,6 +57,15 @@ module Guard
           ::Guard::Notifier.notify(message, options)
         end
 
+        # Output raw string, as Guard UI adds [#XXXXXXX] memory address to string
+        #
+        # @param [String] text the text to colorize
+        # @param [String] color_code the color code
+        #
+        def colorize(text, color_code)
+            return "\e[#{color_code}m#{text}\e[0m"
+        end
+
         private
 
         # Print a info message to the console.

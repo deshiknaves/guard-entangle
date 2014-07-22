@@ -62,7 +62,7 @@ module Guard
         if File.extname(path) == '.js'
           min = path.gsub(/\.[^.]+$/, '.min.js')
           begin
-            if (options[:force_utf8])
+            if options[:force_utf8]
               content.encoding
               content.force_encoding 'utf-8'
             end
@@ -71,7 +71,12 @@ module Guard
           rescue Exception => e
             # Get a readable message
             message = e.message.split(/[\n\r]/).first
+            lines = error_lines(content, message)
             @formatter.error("Uglifier - #{message}")
+            if lines
+              @formatter.error("Surrounding lines:")
+              puts lines
+            end
             return nil
           end
 
@@ -84,6 +89,37 @@ module Guard
         end
       end
 
+      # Get the error lines for an uglifier error
+      #
+      # @param [String] content The content that is being parsed
+      # @param [String] message The error message from uglifier
+      #
+      # @return [mixed] error lines or false
+      #
+      def error_lines(content, message)
+        line = message.match(/line:\s?(\d+),/)
+
+        # The line number is set, we can now get the lines from the file
+        if line[1]
+          counter = 2
+          first = line[1].to_i - options[:error_lines]
+          last = line[1].to_i + options[:error_lines]
+          file_lines = []
+
+          content.each_line do |item|
+            if counter >= first && counter <= last
+              item.sub! "\n", ''
+              if counter == line[1].to_i
+                file_lines << @formatter.colorize("line #{counter}: #{item}", 31)
+              else
+                file_lines << @formatter.colorize("line #{counter}: #{item}", 33)
+              end
+            end
+            counter += 1
+          end
+          return file_lines.join("\n")
+        end
+      end
 
       # Save the file
       #
