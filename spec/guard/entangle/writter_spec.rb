@@ -81,6 +81,13 @@ END
 
         expect(count).to eq(243)
       end
+
+      it "it returns nothing if the line number doesn't exist" do
+        message = 'Uglifier - Unexpected token punc «}», expected punc «,» (line: 555, col: 0, pos: 97)'
+        file_lines = writer.send(:error_lines, content, message)
+
+        expect(file_lines).to eq(nil)
+      end
     end
 
     describe '#error_line_number' do

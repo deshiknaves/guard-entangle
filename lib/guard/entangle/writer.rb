@@ -118,7 +118,10 @@ module Guard
             end
             counter += 1
           end
-          return file_lines.join("\n")
+
+          if not file_lines.empty?
+            return file_lines.join("\n")
+          end
         end
       end
 
