@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Guard::Entangle::Writer do
-  let(:options) { { output: 'spec/test_output' } }
+  let(:options) { { output: 'spec/test_output', error_lines: 8 } }
   let(:writer) { Guard::Entangle::Writer.new(options) }
   let(:cwd) { Dir.pwd }
 
@@ -70,11 +70,22 @@ describe Guard::Entangle::Writer do
       }(jQuery));
 END
     }
+    let(:message) { 'Uglifier - Unexpected token punc «}», expected punc «,» (line: 5, col: 0, pos: 97)' }
+
+    describe '#error_lines' do
+
+      it 'gets the correct lines when a matched line number found' do
+
+        file_lines = writer.send(:error_lines, content, message)
+        count = file_lines.length
+
+        expect(count).to eq(243)
+      end
+    end
 
     describe '#error_line_number' do
 
       it 'matches line number for an Uglifier error message' do
-        message = 'Uglifier - Unexpected token punc «}», expected punc «,» (line: 5, col: 0, pos: 97)'
         line = writer.send(:error_line_number, message)
 
         expect(line).to eq(5)
