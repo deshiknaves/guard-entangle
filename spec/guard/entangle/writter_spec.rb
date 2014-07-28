@@ -6,6 +6,7 @@ describe Guard::Entangle::Writer do
   let(:cwd) { Dir.pwd }
 
   after {
+    # Remove all files after the tests
     base = Dir.pwd
     output_dir = "#{base}/spec/test_output"
     FileUtils.rm_rf output_dir
@@ -45,7 +46,7 @@ describe Guard::Entangle::Writer do
       writer.output('var = test;', writer.options[:output])
     end
 
-    it 'rus save when file is writable' do
+    it 'runs save when file is writable' do
       writer.options[:uglify] = false
       allow(writer).to receive_messages(:create_path? => true)
       allow(File).to receive_messages(:writable? => true)
@@ -55,6 +56,39 @@ describe Guard::Entangle::Writer do
       writer.output('var = test;', writer.options[:output])
     end
   end
+
+  # There are two errors methods
+  describe '#errors' do
+
+    let(:content) {
+      <<END
+      (function($) {
+        console.log('new test');
+      }(jQuery));
+      (function($) {
+        console.log('new test'
+      }(jQuery));
+END
+    }
+
+    describe '#error_line_number' do
+
+      it 'matches line number for an Uglifier error message' do
+        message = 'Uglifier - Unexpected token punc «}», expected punc «,» (line: 5, col: 0, pos: 97)'
+        line = writer.send(:error_line_number, message)
+
+        expect(line).to eq(5)
+      end
+
+      it 'returns null when an incorrect message has been passed' do
+        message = 'Uglifier - Unexpected token punc «}», expected punc «,» (lines: 5, col: 0, pos: 97)'
+        line = writer.send(:error_line_number, message)
+
+        expect(line).to eq(nil)
+      end
+    end
+  end
+
 
   describe '#save' do
 

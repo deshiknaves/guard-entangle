@@ -131,7 +131,7 @@ module Guard
       def error_line_number(message)
         lines = message.match(/line:\s?(\d+),/)
 
-        if lines[1]
+        if lines.kind_of?(MatchData) && lines[1]
           return lines[1].to_i
         end
       end
