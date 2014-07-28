@@ -1,9 +1,20 @@
 require 'spec_helper'
 
 describe Guard::Entangle::Writer do
-  let(:options) { { output: 'spec/test_output', error_lines: 8 } }
+  let(:options) { { output: 'spec/test_output', error_lines: 8, force_utf8: false } }
   let(:writer) { Guard::Entangle::Writer.new(options) }
   let(:cwd) { Dir.pwd }
+  let(:content) {
+      <<END
+      (function($) {
+        console.log('new test');
+      }(jQuery));
+      (function($) {
+        console.log('new test'
+      }(jQuery));
+END
+    }
+    let(:message) { 'Uglifier - Unexpected token punc «}», expected punc «,» (line: 5, col: 0, pos: 97)' }
 
   after {
     # Remove all files after the tests
@@ -57,53 +68,80 @@ describe Guard::Entangle::Writer do
     end
   end
 
-  # There are two errors methods
-  describe '#errors' do
+  describe '#uglify' do
 
-    let(:content) {
-      <<END
-      (function($) {
-        console.log('new test');
-      }(jQuery));
-      (function($) {
-        console.log('new test'
-      }(jQuery));
-END
-    }
-    let(:message) { 'Uglifier - Unexpected token punc «}», expected punc «,» (line: 5, col: 0, pos: 97)' }
+    it 'encodes the content when it is enabled in options' do
+      options[:force_utf8] = true
+      allow(File).to receive_messages(:extname => '.js')
+      uglifier = double(Uglifier)
+      allow(Uglifier).to receive_messages(:new => uglifier)
+      expect(uglifier).to receive_messages(:compile => 'foo')
+      dbl = double(content)
 
-    describe '#error_lines' do
+      expect(dbl).to receive(:encoding)
+      expect(dbl).to receive(:force_encoding).with('utf-8')
+      expect(writer).to receive(:save).and_return('foo')
 
-      it 'gets the correct lines when a matched line number found' do
+      content = writer.send(:uglify, dbl, 'foo', options[:output])
 
-        file_lines = writer.send(:error_lines, content, message)
-        count = file_lines.length
-
-        expect(count).to eq(243)
-      end
-
-      it "it returns nothing if the line number doesn't exist" do
-        message = 'Uglifier - Unexpected token punc «}», expected punc «,» (line: 555, col: 0, pos: 97)'
-        file_lines = writer.send(:error_lines, content, message)
-
-        expect(file_lines).to eq(nil)
-      end
+      expect(content).to eq(nil)
     end
 
-    describe '#error_line_number' do
+    it 'it throws an exception when there is an error' do
+      allow(File).to receive_messages(:extname => '.js')
+      uglifier = double(Uglifier)
+      allow(Uglifier).to receive_messages(:new => uglifier)
+      allow(uglifier).to receive(:compile).and_raise(Exception)
 
-      it 'matches line number for an Uglifier error message' do
-        line = writer.send(:error_line_number, message)
+      allow(::Guard::UI).to receive(:error)
 
-        expect(line).to eq(5)
-      end
+      writer.send(:uglify, content, 'foo', options[:output])
+    end
 
-      it 'returns null when an incorrect message has been passed' do
-        message = 'Uglifier - Unexpected token punc «}», expected punc «,» (lines: 5, col: 0, pos: 97)'
-        line = writer.send(:error_line_number, message)
+    it 'saves a copy if it is defined in the options' do
+      options[:copy] = true
+      allow(File).to receive_messages(:extname => '.js')
+      uglifier = double(Uglifier)
+      allow(Uglifier).to receive_messages(:new => uglifier)
+      expect(uglifier).to receive_messages(:compile => 'foo')
+      expect(writer).to receive(:save).twice.and_return('foo')
 
-        expect(line).to eq(nil)
-      end
+      writer.send(:uglify, content, 'foo', options[:output])
+    end
+  end
+
+  # There are two errors methods
+  describe '#error_lines' do
+
+    it 'gets the correct lines when a matched line number found' do
+
+      file_lines = writer.send(:error_lines, content, message)
+      count = file_lines.length
+
+      expect(count).to eq(243)
+    end
+
+    it "it returns nothing if the line number doesn't exist" do
+      message = 'Uglifier - Unexpected token punc «}», expected punc «,» (line: 555, col: 0, pos: 97)'
+      file_lines = writer.send(:error_lines, content, message)
+
+      expect(file_lines).to eq(nil)
+    end
+  end
+
+  describe '#error_line_number' do
+
+    it 'matches line number for an Uglifier error message' do
+      line = writer.send(:error_line_number, message)
+
+      expect(line).to eq(5)
+    end
+
+    it 'returns null when an incorrect message has been passed' do
+      message = 'Uglifier - Unexpected token punc «}», expected punc «,» (lines: 5, col: 0, pos: 97)'
+      line = writer.send(:error_line_number, message)
+
+      expect(line).to eq(nil)
     end
   end
 
