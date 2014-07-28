@@ -43,6 +43,7 @@ module Guard
           else
             path.gsub! "#{cwd}/", ''
             message = "The path #{ rel } is not writable."
+            puts "here"
             @formatter.error(message)
             return
           end

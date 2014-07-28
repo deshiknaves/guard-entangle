@@ -29,7 +29,7 @@ describe Guard::Entangle do
       }
 
       it 'merges the passed options with the defaults' do
-        subject.options.should == {
+        expect(subject.options).to eq({
           :output           => 'output',
           :input            => 'input',
           :uglify           => false,
@@ -40,7 +40,7 @@ describe Guard::Entangle do
           :force_utf8       => false,
           :error_lines      => 6,
           :copy             => true
-        }
+        })
       end
     end
   end
