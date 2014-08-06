@@ -66,6 +66,7 @@ module Guard
         name = file.sub '//=', ''
         stripped = name.strip
         file = "#{path}/#{stripped}"
+
         if File.exists?(file) && File.readable?(file)
           insert = File.open(file, 'rb')
           insert_content = insert.read

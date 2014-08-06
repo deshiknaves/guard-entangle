@@ -96,4 +96,36 @@ Test})
       expect(matches.count).to eq(0)
     end
   end
+
+  describe "repace" do
+
+    it "replaces the file hook with the contents of the file" do
+      content = "Test\n//=test1.js\n//=test.js"
+      file = entangler.send(:replace, content, '//=test.js', 'spec/test_files')
+
+      expect(file).to eq("Test\n//=test1.js\nTest")
+    end
+
+    it "also matches if the file hook has a space betten the hook and the file name" do
+      content = "Test\n//= test1.js\n//= test.js"
+      file = entangler.send(:replace, content, '//= test.js', 'spec/test_files')
+
+      expect(file).to eq("Test\n//= test1.js\nTest")
+    end
+
+    it "returns back the same content if it doesn't file the file" do
+      content = "Test\n//= test1.js\n//= test6.js"
+      file = entangler.send(:replace, content, '//= test6.js', 'spec/test_files')
+
+      expect(file).to eq("Test\n//= test1.js\n//= test6.js")
+    end
+
+    it "returns back the same content if the file hook doesn't exist" do
+      content = "Test\n//= test1.js\n//= test.js"
+      file = entangler.send(:replace, content, '//= test6.js', 'spec/test_files')
+
+      expect(file).to eq("Test\n//= test1.js\n//= test.js")
+    end
+
+  end
 end
