@@ -1,7 +1,11 @@
 require 'spec_helper'
 
 describe Guard::Entangle::Runner do
-  let(:options) { { output: 'spec/test_output', input: 'spec/test_files'} }
+  let(:options) { {
+    output: 'spec/test_output',
+    input: 'spec/test_files',
+    run_all: { message: 'Entangling all files' }
+  } }
   let(:runner) { Guard::Entangle::Runner.new(options) }
   before {
     allow(Guard::UI).to receive(:info)
@@ -87,5 +91,41 @@ describe Guard::Entangle::Runner do
 
       expect(content).to eq('foo')
     end
+
   end
+
+  describe '#run_all' do
+
+    it "it returns nil when paths is empty" do
+      options[:input] = 'spec/test_files/'
+      content = runner.send(:run_all)
+
+      expect(content).to eq(nil)
+    end
+
+    it "compiles all files when the output is a directory" do
+      expect(runner).to receive_messages(:run_paths => true)
+      content = runner.send(:run_all)
+
+      expect(content).to eq(true)
+    end
+
+    it "compiles all files into one when the output is a file" do
+      expect(runner).to receive_messages(:compile_all => 'foo')
+      options[:output] = 'spec/test_output/file.js'
+      content = runner.send(:run_all)
+
+      expect(content).to eq('foo')
+    end
+
+    it "runs compile when the input in a file" do
+      options[:input] = 'spec/test_files/test.js'
+      expect(runner).to receive_messages(:compile => 'foo')
+      content = runner.send(:run_all)
+
+      expect(content).to eq('foo')
+    end
+
+  end
+
 end
