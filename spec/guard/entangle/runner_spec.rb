@@ -128,4 +128,25 @@ describe Guard::Entangle::Runner do
 
   end
 
+  describe '#run_paths' do
+
+    it "proecess the directory when the path is a string" do
+      expect(runner).to receive_messages(:process_dir => 'foo')
+      content = runner.send(:run_paths, 'spec/test_files/test.js')
+
+      expect(content).to eq('foo')
+    end
+
+    it "processes each path when the paths in an array" do
+      expect(runner).to receive(:process_dir).twice.and_return('foo')
+      content = runner.send(:run_paths, ['spec/test_files/test.js', 'spec/test_files/test1.js'])
+    end
+
+    it "throws an error if the paths are not a string or an array" do
+      expect(::Guard::UI).to receive(:error)
+      runner.send(:run_paths, {test: 'foo'})
+    end
+
+  end
+
 end

@@ -83,7 +83,7 @@ module Guard
         elsif paths.kind_of?(String)
           process_dir(paths)
         else
-          ::Guard::UI.info "Paths in configuration are incorrect"
+          ::Guard::UI.error "Paths in configuration are incorrect"
         end
       end
 
