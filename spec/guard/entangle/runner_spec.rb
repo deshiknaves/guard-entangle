@@ -149,4 +149,14 @@ describe Guard::Entangle::Runner do
 
   end
 
+  describe "#process_dir" do
+
+    it "returns false if the file isn't a directory" do
+      process = runner.send(:process_dir, 'spec/test_files/test.js')
+
+      expect(process).to eq(false)
+    end
+
+  end
+
 end
