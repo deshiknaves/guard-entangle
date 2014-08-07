@@ -210,4 +210,20 @@ describe Guard::Entangle::Runner do
 
   end
 
+  describe "#partial?" do
+
+    it "returns true when it is a partial" do
+      partial = runner.send(:partial?, 'spec/test_files/_test.js')
+
+      expect(partial).to eq(true)
+    end
+
+    it "returns false when it isn't a partial" do
+      partial = runner.send(:partial?, 'spec/test_files/test.js')
+
+      expect(partial).to eq(false)
+    end
+
+  end
+
 end
