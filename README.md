@@ -8,8 +8,6 @@ Often you might have separate JavaScript files that need to be included into one
 
 ## Installation
 
-NOTE: This is an innitial release - just to make sure the name isn't stolen now that it's on Github (I'm told this happens). There are a couple of Rpecs missing. It will be a full release once those files are added to this gem.
-
 Add this line to your application's Gemfile:
 
     gem 'guard-entangle'
@@ -45,7 +43,7 @@ When a single file is triggered, it will check if the file is a partial or not.
 
 A partial is a file that is not meant to be complied on its own, but is included within another file. Guard-Entangle determines this by check if the file or folder has **_**
  at the start of its name. For example a file named *_File1.js* will be considered to be a partial. Folders that start with _ will be skipped when runnign the run all command. All files within a partials folder should also start with an _.
- 
+
 If it is a partial, it will trigger the _run all_ command. If its not a partial, it will compile that file only. This is because partials don't get compiled on their own, but its their parent that needs to be compiled.
 
 The _run all_ command will take all the file(s) in the input directory (that are not partials) and compile them into the output directory.
