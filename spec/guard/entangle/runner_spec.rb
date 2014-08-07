@@ -157,6 +157,20 @@ describe Guard::Entangle::Runner do
       expect(process).to eq(false)
     end
 
+    it "processes all the files in the directory" do
+      expect(runner).to receive(:compile).exactly(3).times.and_return('foo')
+      compiled = runner.send(:process_dir, 'spec/test_files')
+    end
+
+    it "returns the content if only compile is passed in" do
+      expect(runner).to receive(:compile).exactly(3).times.and_return('foo')
+      compiled = runner.send(:process_dir, 'spec/test_files', true)
+
+      expect(compiled).to eq('foofoofoo')
+    end
+
   end
+
+
 
 end
