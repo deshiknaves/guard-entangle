@@ -7,6 +7,8 @@ describe Guard::Entangle::Runner do
     run_all: { message: 'Entangling all files' }
   } }
   let(:runner) { Guard::Entangle::Runner.new(options) }
+  let(:writer) { Guard::Entangle::Writer.new(options) }
+  let(:formatter) { Guard::Entangle::Formatter.new }
   before {
     allow(Guard::UI).to receive(:info)
     base = Dir.pwd
@@ -171,6 +173,41 @@ describe Guard::Entangle::Runner do
 
   end
 
+  describe "#compile_all" do
 
+    it "compiles all files that are in the directory" do
+
+      expect(runner).to receive(:process_dir).exactly(1).times.and_return('foo')
+      expect_any_instance_of(Guard::Entangle::Writer).to receive_messages(:output => 'foo')
+      expect_any_instance_of(Guard::Entangle::Formatter).to receive(:success)
+
+      runner.send(:compile_all, 'spec/test_files')
+    end
+
+  end
+
+  describe "#compile" do
+
+    it "returns the contents if only_compile is true" do
+      expect_any_instance_of(Guard::Entangle::Entangler).to receive_messages(:convert => 'foo')
+      content = runner.send(:compile, 'spec/test_files/test.js', true)
+
+      expect(content).to eq('foo')
+    end
+
+    it "throws an error if the contents of the file is empty" do
+      expect_any_instance_of(Guard::Entangle::Entangler).to receive_messages(:convert => nil)
+      expect_any_instance_of(Guard::Entangle::Formatter).to receive(:error)
+      runner.send(:compile, 'spec/test_files/test.js')
+    end
+
+    it "saves a file if content is returned" do
+      expect_any_instance_of(Guard::Entangle::Entangler).to receive_messages(:convert => 'foo')
+      expect_any_instance_of(Guard::Entangle::Writer).to receive_messages(:output => 'foo')
+      expect_any_instance_of(Guard::Entangle::Formatter).to receive(:success)
+      runner.send(:compile, 'spec/test_files/test.js')
+    end
+
+  end
 
 end
