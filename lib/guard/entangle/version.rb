@@ -2,6 +2,6 @@
 
 module Guard
   class EntangleVersion
-    VERSION = "0.0.5.1"
+    VERSION = "0.0.5.2"
   end
 end
