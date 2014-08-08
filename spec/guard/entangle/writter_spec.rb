@@ -143,6 +143,13 @@ END
 
       expect(line).to eq(nil)
     end
+
+    it "returns nothing when a nil class has been passed" do
+      message = nil;
+      line = writer.send(:error_line_number, message)
+
+      expect(line).to eq(nil)
+    end
   end
 
 

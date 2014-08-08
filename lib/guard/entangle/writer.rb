@@ -132,7 +132,7 @@ module Guard
       # @return [String] The error line number
       #
       def error_line_number(message)
-        lines = message.match(/line:\s?(\d+),/)
+        lines = message.match(/line:\s?(\d+),/) unless message === nil
 
         if lines.kind_of?(MatchData) && lines[1]
           return lines[1].to_i
