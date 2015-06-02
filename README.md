@@ -1,5 +1,7 @@
 # Guard::Entangle
 
+[![Join the chat at https://gitter.im/deshiknaves/guard-entangle](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/deshiknaves/guard-entangle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This is a plugin for the Ruby gem [Guard](https://github.com/guard/guard). Guard-Entangle allows you to include one file inline into another. It uses a syntax of `//= path/to/file` to substitute that file in place of that line.
 
 ## Common usage
